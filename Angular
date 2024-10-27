@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html lang="en" ng-app="weatherApp">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Weather App</title>
+    <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.8.2/angular.min.js"></script>
+    <script src="app.js"></script>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body ng-controller="WeatherController as weatherCtrl">
+    <div class="container">
+        <h1>The Weather App</h1>
+        <h2>{{weatherCtrl.temperature}} ° Celsius</h2>
+        <h3>{{weatherCtrl.city}}</h3>
+        
+        <input type="text" ng-model="weatherCtrl.cityInput" placeholder="Enter city" />
+        <button ng-click="weatherCtrl.getWeather()">Get Weather</button>
+    </div>
+</body>
+</html>
+
+var app = angular.module('weatherApp', []);
+
+app.controller('WeatherController', ['$http', function($http) {
+    var vm = this;
+    vm.city = "Visakhapatnam"; // Default city
+    vm.temperature = 24; // Default temperature
+
+    // Function to get weather data
+    vm.getWeather = function() {
+        var apiKey = 'YOUR_API_KEY'; // Add your OpenWeather API key here
+        var url = 'https://api.openweathermap.org/data/2.5/weather?q=' + vm.cityInput + '&units=metric&appid=' + apiKey;
+
+        $http.get(url).then(function(response) {
+            vm.temperature = response.data.main.temp;
+            vm.city = response.data.name;
+        }, function(error) {
+            console.log("Error fetching weather data", error);
+        });
+    };
+}]);
+
+
+
+body {
+    font-family: Arial, sans-serif;
+    background-color: #e3f2fd;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+    margin: 0;
+}
+
+.container {
+    text-align: center;
+    background-color: white;
+    padding: 2rem;
+    border-radius: 10px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+}
+
+h1, h2, h3 {
+    margin: 0.5rem 0;
+}
+
+input {
+    padding: 0.5rem;
+    width: 200px;
+    margin-right: 1rem;
+}
+
+button {
+    padding: 0.5rem 1rem;
+    background-color: #1976d2;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+}
+
+button:hover {
+    background-color: #1565c0;
+}
